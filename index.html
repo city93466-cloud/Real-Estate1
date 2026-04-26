@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Darna.dz</title>
+    <link rel="stylesheet" href="exo3.css"> 
+</head>
+<body>
+    <!------------------------->
+<header class="header">
+
+
+  <div class="top-nav">
+    <a href="#">Home</a>
+    <a href="#propertyForm">Browse Houses</a>
+    <a href="#footer">Contact</a>
+    <a href="#properties-container">Select</a>
+  </div>
+
+  
+  <div class="auth-nav">
+    <a href="login.html">Login</a>
+    <a href="creat.html" class="btn">Create Account</a>
+  </div>
+
+</header>    
+
+<div class="container">
+
+<section class="hero">
+
+  <!-- الصورة -->
+  <div class="hero-image">
+    <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994" />
+  </div>
+
+  <div class="hero-content">
+    <h1>
+      When you're ready <br>
+      for a change,<br>
+      we're ready to help
+    </h1>
+
+    <p>
+      Our team is here to support you every step of the way.<br>
+      Let's embark on this journey together.
+    </p>
+
+    <!-- search home -->
+    <div class="search-box">
+      <select id="city1">
+        <option value="">City</option>
+        <option value="Oran">Oran</option>
+        <option value="Alger">Alger</option>
+        <option value="Tiaret">Tiaret</option>
+        <option value="Djelfa">Djelfa</option>
+        <option value="Blida">Blida</option>
+      </select>
+
+      <select id="type1">
+        <option value="">Type</option>
+        <option value="Appartement">Appartement</option>
+        <option value="Villa">Villa</option>
+      </select>
+
+      <select id="price1">
+        <option value="">Price</option>
+        <option value="10000-100000">10k - 100k</option>
+        <option value="100000-250000">100k - 500k</option>
+        <option value="250000-500000"> 250k- 500k</option>
+        <option value="500000-1000000">500k - 1m</option>
+      </select>
+
+      <!-- 🔥 مهم -->
+      <button type="button" onclick="search()">🔍</button>
+    </div>
+
+  </div>
+
+</section>
+
+
+</div>
+
+            
+    <div class="main2">
+        <h1>Why choose us</h1>
+        <div class="main-card">
+            <div class="card">
+                <div class="icon-img">
+                    <img src="https://i.postimg.cc/QC4MxCdh/tax.png" alt="icon">
+                </div>
+                <h3>Tax Advantages</h3>
+                <p>When you choose our company, you can take advantage of various tax benefits, including mortgage interest deductions, property tax deductions and depreciation benefits for rental properties</p>
+            </div>
+<div class="card">
+                <div class="icon-img">
+                    <img src="https://i.postimg.cc/t4yXQF5W/property.png" alt="icon">
+                </div>
+                <h3>Property insurances</h3>
+                <p>We give to our customers insurances that includes protection for your home and personal belongings from damages or theft and protection against damages caused by flooding, not typically covered by homeowners insurance</p>
+            </div>
+ <div class="card">
+                <div class="icon-img">
+                    <img src="https://i.postimg.cc/8PN3T42p/com.png" alt="icon">
+                </div>
+                <h3>Lowest Comission</h3>
+                <p>We are proud to offer the lowest commissions to our valued customers! Your satisfaction is our priority!</p>
+            </div>
+  <div class="card">
+                <div class="icon-img">
+                    <img src="https://i.postimg.cc/SxjgKvDh/money.png" alt="icon">
+                </div>
+                <h3>Best Prices</h3>
+                <p>We are proud to offer you the best prices in the market! Your dream home is just a click away. Let us help you find it!</p>
+            </div>
+        </div>
+    </div>
+    <div class="main3">
+    <div class="explore">
+        <div class="img-exp">
+            <img src="https://i.postimg.cc/QN7zcCLy/house-2.png" alt="image">
+        </div>
+        <div class="content-exp">
+            <h2>We are all biochemically unique. Buying or selling your home should be, too</h2>
+            <p>Just as our fingerprints are individual, so too are our needs and desires when it comes to finding the perfect home.  The traditional, one-size-fits-all approach to real estate simply doesn't resonate with this truth. We take the time to truly understand your specific needs, aspirations, and anxieties, tailoring our services to create a personalized experience that reflects your individuality</p>
+            <button class="btn-exp">Explore More</button>
+        </div>
+    </div>
+    </div>
+
+
+<!--عرض المنازل-->
+<div id="properties-container"></div>
+
+
+        <div class="clients">
+        <div class="left">
+            <div class="img-cust"> <img src="https://i.postimg.cc/bNPjx730/clients.png" alt="image" class="customer">
+            </div>
+        </div>
+        <div class="right">
+            <h2>What our clients are saying</h2>
+            <p>I am pleased and blessed with my experience with Real Estate. They have the most professional and kindest
+                team. Real Estate went above and beyond, and I am so grateful for their help</p>
+        </div>
+          
+    </div>
+
+    <div class="clients">
+        <div class="left">
+            <div class="img-cust"> <img src="Screenshot 2026-04-21 095707.png" alt="image" class="customer">
+            </div>
+        </div>
+        <div class="right">
+            <h2>Reach Potential Buyers & Tenants</h2>
+            <p>List your property with us today! Whether you're looking to sell or rent out your apartment, <br>
+              our platform connects you with the right audience quickly and easily</p>
+        </div>
+    </div>
+    
+<div class="add-property" id="addProperty">
+  <h2>List your Apartment Now!</h2>
+  <form id="propertyForm" onsubmit="addProperty(event)">
+    <textarea id="description" placeholder="Property Description..." rows="4" required></textarea>
+    <input type="text" id="city" placeholder="City (Oran, Algiers...)" required>
+    <input type="text" id="type" placeholder="Type (Villa, Apartment...)" required>
+    <input type="number" id="price" placeholder="Price (DZD)" required>
+    <input type="url" id="image" placeholder="Image URL" required>
+    <input type="number" id="surface" placeholder="Surface (m²)" required>
+    <input type="tel" id="phone" placeholder="Phone Number" required>
+    <select id="operation" required>
+      <option value="">Select Operation</option>
+      <option value="sale">For Sale (بيع)</option>
+      <option value="rent">For Rent (كراء)</option>
+    </select>
+    <button type="submit">Add</button>
+  </form>
+</div>
+
+
+
+
+  <footer class="footer" id="footer">
+  <div class="estate">
+    <h2>Darna.dz</h2>
+    <p>When you're ready for a change we're ready to help</p>
+
+    <div class="social">
+
+      <!-- Facebook -->
+      <div class="icon">
+        <a href="https://www.facebook.com" target="_blank">
+          <img src="https://i.postimg.cc/BQwB9Ktm/facebook.png" alt="facebook">
+        </a>
+      </div>
+
+      <!-- Instagram -->
+      <div class="icon">
+        <a href="https://www.instagram.com" target="_blank">
+          <img src="https://i.postimg.cc/2SbFzSZr/insta.png" alt="instagram">
+        </a>
+      </div>
+
+      <!-- LinkedIn -->
+      <div class="icon">
+        <a href="https://www.linkedin.com" target="_blank">
+          <img src="https://i.postimg.cc/kg0NDPQ8/linkedin.png" alt="linkedin">
+        </a>
+      </div>
+  
+      <!-- Twitter -->
+      <div class="icon">
+        <a href="https://www.twitter.com" target="_blank">
+          <img src="https://i.postimg.cc/Wz1gxNVR/twitter.png" alt="twitter">
+        </a>
+      </div>
+ <!-- App Store -->
+  <a href="https://www.apple.com/app-store/" target="_blank">
+    <img src="https://i.postimg.cc/C1TVv5j1/app-store.png" alt="app store">
+  </a>
+
+  <!-- Play Store -->
+  <a href="https://play.google.com/store" target="_blank">
+    <img src="https://i.postimg.cc/763rj4VN/playstore.png" alt="play store">
+  </a>
+    </div>
+  </div>
+
+</footer>
+</div>
+<link rel="icon" href="https://i.postimg.cc/htCbVtzQ/logo.png">
+<script src="projet.js" defer ></script>
+
+</body>
+</html>
