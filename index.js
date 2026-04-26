@@ -2,31 +2,27 @@ const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
 const { createClient } = require("@supabase/supabase-js");
-const path = require("path");
 
 const app = express();
 
 // ================== MIDDLEWARE ==================
 app.use(express.json());
 
+// ✅ مهم: نخلي CORS مفتوح
 app.use(cors({
-  origin: "http://localhost:3000",
+ origin: "https://city93466-cloud.github.io",
   credentials: true
 }));
-                         
+
 app.use(session({
   secret: "secret-key",
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    secure: true,        
+    sameSite: "none"     
+  }
 }));
-
-app.use(express.static(path.join(__dirname)));
-
-// ================== HOME ==================
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "exo3.html"));
-});
-
 // ================== SUPABASE ==================
 const supabase = createClient(
   "https://fbzyeemhuohhgpwihzru.supabase.co",
@@ -73,9 +69,6 @@ app.get("/properties", async (req, res) => {
     .from("properties")
     .select("*");
 
-  console.log("DATA:", data);
-  console.log("ERROR:", error);
-
   if (error) {
     return res.json({ error: error.message });
   }
@@ -110,17 +103,14 @@ app.post("/add-property", async (req, res) => {
 });
 
 // ================== DELETE ==================
-
-  app.delete("/properties/:id", async (req, res) => {
+app.delete("/properties/:id", async (req, res) => {
   try {
-    // 🔐 تحقق login
     if (!req.session.user) {
       return res.status(401).json({ message: "Login required ❌" });
     }
 
     const { id } = req.params;
 
-    // 🔍 نجيب العقار (نستعمل single)
     const { data: property, error: fetchError } = await supabase
       .from("properties")
       .select("*")
@@ -131,28 +121,31 @@ app.post("/add-property", async (req, res) => {
       return res.status(404).json({ message: "Property not found ❌" });
     }
 
-    // 🔐 تحقق المالك
     if (property.user_id !== req.session.user.id) {
-      return res.status(403).json({ message: "لا يمكنك حذف هذا العقار ❌" });
+      return res.status(403).json({ message: "Not allowed ❌" });
     }
 
-    // 🗑️ حذف
     const { error: deleteError } = await supabase
       .from("properties")
       .delete()
       .eq("id", id);
 
     if (deleteError) {
-      return res.status(500).json({ message: "فشل الحذف ❌" });
+      return res.status(500).json({ message: "Delete failed ❌" });
     }
 
-    res.status(200).json({ message: "تم الحذف بنجاح ✅" });
+    res.json({ message: "Deleted ✅" });
 
   } catch (err) {
-    console.error("DELETE ERROR:", err);
     res.status(500).json({ message: "Server error ❌" });
   }
 });
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+
+// ================== PORT ==================
+
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
 });

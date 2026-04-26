@@ -1,16 +1,14 @@
 let allProperties = [];
-// ================= REGISTER =================
+
 // ================= REGISTER =================
 async function register() {
-  console.log("REGISTER CLICKED ✅");
-
   const name = document.getElementById("name")?.value;
   const lastname = document.getElementById("lastname")?.value;
   const email = document.getElementById("email")?.value;
   const password = document.getElementById("password")?.value;
   const wilaya = document.getElementById("wilaya")?.value;
 
-  const res = await fetch("http://localhost:3000/register", {
+  const res = await fetch("https://backend-app-f58v.onrender.com/register", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     credentials: "include",
@@ -18,19 +16,19 @@ async function register() {
   });
 
   const data = await res.json();
-
   alert(data.message);
 
-  
-  if (data.message.includes("registered")) {
-window.location.href = "exo3.html";  }
+  if (data.message.includes("Registered")) {
+    window.location.href = "exo3.html";
+  }
 }
+
 // ================= LOGIN =================
 async function login() {
   const email = document.getElementById("login_email")?.value;
   const password = document.getElementById("login_password")?.value;
 
-  const res = await fetch("http://localhost:3000/login", {
+  const res = await fetch("https://backend-app-f58v.onrender.com/login", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     credentials: "include",
@@ -38,60 +36,61 @@ async function login() {
   });
 
   const data = await res.json();
-
   alert(data.message);
 
   if (data.message.includes("successful")) {
     window.location.href = "exo3.html";
   }
 }
+
 // ================= LOAD =================
 async function loadProperties() {
   try {
-    const res = await fetch("http://localhost:3000/properties");
+    const res = await fetch("https://backend-app-f58v.onrender.com/properties");
     const data = await res.json();
 
     console.log("PROPERTIES:", data);
 
-    allProperties = data; 
-
+    allProperties = data;
     displayProperties(allProperties);
 
   } catch (err) {
     console.error(err);
   }
 }
+
 window.onload = loadProperties;
-// ================= desplay ================= 
-function displayProperties(properties, currentUser) {
+
+// ================= DISPLAY =================
+function displayProperties(properties) {
   const container = document.getElementById("properties-container");
 
-  container.innerHTML = properties.map(property => {
+  container.innerHTML = properties.map(property => `
+    <div class="property-card"
+         data-city="${property.city}"
+         data-type="${property.type}"
+         data-price="${property.price}">
 
-    return `
-      <div class="property-card">
-
-        <div class="property-image">
-          <img src="${property.image}" />
-        </div>
-
-        <div class="property-info">
-          <span>🏠 ${property.type}</span>
-          <span>📍 ${property.city}</span>
-          <span>📌 ${property.operation}</span>
-          <span>💰 ${property.price}</span>
-          <span>📐 ${property.surface}</span>
-          <span>📞 ${property.phone}</span>
-          <span class="desc">📝 ${property.description}</span>
-
-          <button onclick="deleteProperty('${property.id}')" class="delete-btn">
-            Delete
-          </button>
-        </div>
-
+      <div class="property-image">
+        <img src="${property.image}" />
       </div>
-    `;
-  }).join("");   
+
+      <div class="property-info">
+        <span>🏠 ${property.type}</span>
+        <span>📍 ${property.city}</span>
+        <span>📌 ${property.operation}</span>
+        <span>💰 ${property.price}</span>
+        <span>📐 ${property.surface}</span>
+        <span>📞 ${property.phone}</span>
+        <span class="desc">📝 ${property.description}</span>
+
+        <button onclick="deleteProperty('${property.id}')" class="delete-btn">
+          Delete
+        </button>
+      </div>
+
+    </div>
+  `).join("");
 }
 
 // ================= ADD =================
@@ -107,7 +106,7 @@ async function addProperty(e) {
   const phone = document.getElementById("phone").value;
   const operation = document.getElementById("operation").value;
 
-  const res = await fetch("http://localhost:3000/add-property", {
+  const res = await fetch("https://backend-app-f58v.onrender.com/add-property", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     credentials: "include",
@@ -126,10 +125,10 @@ async function addProperty(e) {
 
 // ================= DELETE =================
 window.deleteProperty = async function(id) {
-  if (!confirm("هل أنت متأكد من الحذف؟")) return;
+  if (!confirm("هل أنت متأكد؟")) return;
 
   try {
-    const res = await fetch(`http://localhost:3000/properties/${id}`, {
+    const res = await fetch(`https://backend-app-f58v.onrender.com/properties/${id}`, {
       method: "DELETE",
       credentials: "include"
     });
@@ -141,14 +140,15 @@ window.deleteProperty = async function(id) {
       return;
     }
 
-    alert("تم الحذف بنجاح ✅");
+    alert("تم الحذف ✅");
     loadProperties();
 
   } catch (err) {
-    alert("خطأ في السيرفر ❌");
+    alert("خطأ ❌");
   }
 }
-//---------------------------
+
+// ================= SEARCH =================
 function search() {
   const city = document.getElementById("city1")?.value.toLowerCase() || "";
   const type = document.getElementById("type1")?.value.toLowerCase() || "";
@@ -165,45 +165,16 @@ function search() {
 
   const cards = document.querySelectorAll(".property-card");
 
-  let firstMatch = null;
-  let hasMatch = false;
-
   cards.forEach(card => {
-    const cCity = card.dataset.city?.toLowerCase() || "";
-    const cType = card.dataset.type?.toLowerCase() || "";
-    const cPrice = Number(card.dataset.price) || 0;
+    const cCity = card.dataset.city.toLowerCase();
+    const cType = card.dataset.type.toLowerCase();
+    const cPrice = Number(card.dataset.price);
 
     const match =
-      (city && cCity.includes(city)) ||
-      (type && cType.includes(type)) ||
-      (price && cPrice >= min && cPrice <= max);
+      (!city || cCity.includes(city)) &&
+      (!type || cType.includes(type)) &&
+      (!price || (cPrice >= min && cPrice <= max));
 
-    if (match) {
-      card.style.display = "flex";
-      hasMatch = true;
-      if (!firstMatch) firstMatch = card;
-    } else {
-      card.style.display = "none";
-    }
+    card.style.display = match ? "flex" : "none";
   });
-
-  if (!hasMatch) {
-    cards.forEach(card => {
-      card.style.display = "flex";
-    });
-  }
-
-  // 🔽 scroll
-  if (firstMatch) {
-    firstMatch.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  } else {
-    document.getElementById("properties-container").scrollIntoView({
-      behavior: "smooth"
-    });
-  }
 }
-
-loadProperties();
