@@ -1,0 +1,185 @@
+const express = require("express");
+const session = require("express-session");
+const cors = require("cors");
+const { createClient } = require("@supabase/supabase-js");
+const path = require("path");
+
+const app = express();
+
+// ==========================
+// MIDDLEWARE
+// ==========================
+app.use(express.json());
+
+// 🔥 حل مشكل session + fetch
+app.use(cors({
+  origin: "http://127.0.0.1:5500", // إذا تخدم بـ Live Server
+  credentials: true
+}));
+
+app.use(
+  session({
+    secret: "secret-key",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+// 👇 يخدم HTML و CSS و JS
+app.use(express.static(path.join(__dirname)));
+
+// ==========================
+// HOME
+// ==========================
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// ==========================
+// SUPABASE
+// ==========================
+const supabase = createClient(
+  "https://fbzyeemhuohhgpwihzru.supabase.co",
+  "sb_secret_XXXX"
+);
+
+// ==========================
+// REGISTER
+// ==========================
+app.post("/register", async (req, res) => {
+  try {
+    const { email, password, name, lastname, wilaya } = req.body;
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) return res.json({ message: error.message });
+
+    const user = data.user;
+
+    await supabase.from("users").insert([{
+      id: user.id,
+      name: name + " " + lastname,
+      email,
+      wilaya,
+    }]);
+
+    res.json({ message: "User registered ✅" });
+
+  } catch (err) {
+    console.error(err);
+    res.json({ message: "Server error ❌" });
+  }
+});
+
+// ==========================
+// LOGIN
+// ==========================
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) return res.json({ message: error.message });
+
+    req.session.user = data.user;
+
+    res.json({ message: "Login successful ✅" });
+
+  } catch (err) {
+    console.error(err);
+    res.json({ message: "Login error ❌" });
+  }
+});
+
+// ==========================
+// GET PROPERTIES
+// ==========================
+app.get("/properties", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("properties")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) return res.json([]);
+
+    res.json(data);
+
+  } catch (err) {
+    console.error(err);
+    res.json([]);
+  }
+});
+
+// ==========================
+// ADD PROPERTY
+// ==========================
+app.post("/add-property", async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.json({ message: "Login required ❌" });
+    }
+
+    const {
+      description, city, type, price,
+      image, surface, phone, operation
+    } = req.body;
+
+    const { error } = await supabase.from("properties").insert([{
+      description,
+      city,
+      type,
+      price,
+      image,
+      surface,
+      phone,
+      operation,
+      user_id: req.session.user.id
+    }]);
+
+    if (error) return res.json({ message: error.message });
+
+    res.json({ message: "Added ✅" });
+
+  } catch (err) {
+    console.error(err);
+    res.json({ message: "Error adding ❌" });
+  }
+});
+
+// ==========================
+// DELETE
+// ==========================
+app.delete("/delete-property/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { error } = await supabase
+      .from("properties")
+      .delete()
+      .eq("id", id);
+
+    if (error) return res.json({ message: error.message });
+
+    res.json({ message: "Deleted ✅" });
+
+  } catch (err) {
+    console.error(err);
+    res.json({ message: "Delete error ❌" });
+  }
+});
+
+// ==========================
+// START SERVER
+// ==========================
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
+});
+

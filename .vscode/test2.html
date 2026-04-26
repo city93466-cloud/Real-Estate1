@@ -1,0 +1,202 @@
+const express = require("express");
+const cors = require("cors");
+const session = require("express-session");
+
+const app = express();
+const PORT = 3000;
+
+// ==========================
+// Middlewares
+// ==========================
+app.use(express.json());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
+app.use(express.static(__dirname));
+
+// 🔐 Session
+app.use(session({
+  secret: "secret-key",
+  resave: false,
+  saveUninitialized: true
+}));
+
+// ==========================
+// Data (temporary storage)
+// ==========================
+const data = {
+  properties: [
+    {
+      id: 1,
+      title: "Villa moderne",
+      city: "Alger",
+      type: "Villa",
+      price: 200000,
+      image: "https://via.placeholder.com/300",
+      user_id: 1
+    }
+  ],
+  subscribers: [],
+  users: []
+};
+
+// ==========================
+// 🏠 Add Property
+// ==========================
+app.post("/add-property", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "Login required ❌" });
+  }
+
+  const { title, city, type, price, image } = req.body;
+
+  if (!title || !city || !type || !price) {
+    return res.status(400).json({ message: "Missing data ❌" });
+  }
+
+  data.properties.push({
+    id: Date.now(),
+    title,
+    city,
+    type,
+    price: Number(price),
+    image,
+    user_id: req.session.user.id
+  });
+
+  res.json({ message: "Property added ✅" });
+});
+
+// ==========================
+// 📄 Get Properties
+// ==========================
+app.get("/properties", (req, res) => {
+  res.json(data.properties);
+});
+
+// ==========================
+// 🗑️ Delete Property
+// ==========================
+app.delete("/delete-property/:id", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "Login required ❌" });
+  }
+
+  const propertyId = Number(req.params.id);
+  const userId = req.session.user.id;
+
+  const index = data.properties.findIndex(
+    (p) => p.id === propertyId && p.user_id === userId
+  );
+
+  if (index === -1) {
+    return res.status(403).json({ message: "Not allowed ❌" });
+  }
+
+  data.properties.splice(index, 1);
+
+  res.json({ message: "Deleted successfully ✅" });
+});
+
+// ==========================
+// 🔍 Search Properties
+// ==========================
+app.get("/search", (req, res) => {
+  const { city, type, minPrice, maxPrice } = req.query;
+
+  let result = data.properties.filter(p => {
+
+    const cityMatch = city
+      ? p.city.toLowerCase().includes(city.toLowerCase())
+      : false;
+
+    const typeMatch = type
+      ? p.type.toLowerCase().includes(type.toLowerCase())
+      : false;
+
+    const priceMatch =
+      (minPrice && maxPrice)
+        ? (p.price >= Number(minPrice) && p.price <= Number(maxPrice))
+        : false;
+
+    if (!city && !type && !minPrice && !maxPrice) {
+      return true;
+    }
+
+    return cityMatch || typeMatch || priceMatch;
+  });
+
+  res.json(result);
+});
+
+// ==========================
+// 📧 Subscribe
+// ==========================
+app.post("/subscribe", (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email required ❌" });
+  }
+
+  data.subscribers.push({ email });
+
+  res.json({ message: "Subscribed successfully ✅" });
+});
+
+// ==========================
+// 👤 Register
+// ==========================
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Missing data ❌" });
+  }
+
+  const user = {
+    id: Date.now(),
+    username,
+    password
+  };
+
+  data.users.push(user);
+
+  res.json({ message: "User registered ✅" });
+});
+
+// ==========================
+// 🔐 Login
+// ==========================
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  const user = data.users.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (!user) {
+    return res.status(401).json({ message: "Invalid credentials ❌" });
+  }
+
+  // 🔥 نخزن المستخدم في session
+  req.session.user = user;
+
+  res.json({ message: "Login successful ✅", user });
+});
+
+// ==========================
+// 👤 Current User
+// ==========================
+app.get("/me", (req, res) => {
+  res.json(req.session.user || null);
+});
+
+// ==========================
+// 🚀 Start Server
+// ==========================
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
