@@ -10,10 +10,7 @@
 
 }
 /*header*/
-/* ===================== */
-/* ===================== */
-/* HEADER */
-/* ===================== */
+
 .header {
   display: flex;
   flex-direction: column;
@@ -24,13 +21,12 @@
 }
 
 /* ===================== */
-/* TOP NAV */
-/* ===================== */
+
 .top-nav {
   display: flex;
   justify-content: center;
 
-  gap: 60px; /* مسافة كبيرة وواضحة */
+  gap: 60px; 
   margin-bottom: 20px;
 }
 
@@ -40,7 +36,7 @@
   font-size: 22px;
   font-weight: bold;
 
-  padding: 10px; /* هذا يضمن المسافة حتى لو gap ما خدمش */
+  padding: 10px;
   transition: 0.3s;
 }
 
@@ -56,7 +52,7 @@
   gap: 20px;
 }
 
-/* 🔥 نفس ستايل Create Account */
+/*Create Account */
 .auth-nav a {
   background: #3c6e71;
   color: white;
@@ -77,8 +73,7 @@
   transform: scale(1.05);
 }
 /* ===================== */
-/* RESET خفيف */
-/* ===================== */
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -86,8 +81,7 @@ body {
 }
 
 /* ===================== */
-/* CONTAINER (هذا المهم) */
-/* ===================== */
+
 .container {
   max-width: 1200px;
   margin: auto;          /* يوسّط الموقع */
@@ -95,8 +89,7 @@ body {
 }
 
 /* ===================== */
-/* HERO */
-/* ===================== */
+
 .hero {
     margin-top: 60px;
   display: flex;
@@ -104,7 +97,6 @@ body {
   gap: 40px;
 }
 
-/* الصورة */
 .hero-image img {
     margin-top: -20px;
     height: 400px;
@@ -114,7 +106,7 @@ body {
   margin-left: 20px;
 }
 
-/* النص */
+
 .hero-content {
   flex: 1;
 }
@@ -131,8 +123,6 @@ body {
   font-size: 30px;
 }
 
-/* ===================== */
-/* SEARCH */
 /* ===================== */
 .search-box {
   width: 500px;
@@ -165,8 +155,7 @@ body {
   cursor: pointer;
 }
 
-/* ===================== */
-/* RESULTS */
+
 /* ===================== */
 #results {
   margin-top: 40px;
@@ -374,7 +363,6 @@ margin-bottom: 60px;
 
             .explore .content-exp .btn-exp:hover { background-color: var(--icon-bg); color: var(--navbar-color); }
 
-HOUSES
 
 
 
@@ -987,7 +975,7 @@ form button {
     text-align:center;
 }
 
-/* نحول الفورم إلى box */
+
 #propertyForm{
     margin-top: 30px;
     width:420px;
@@ -1001,7 +989,6 @@ form button {
     transition:0.3s;
 }
 
-/* تأثير خفيف عند المرور */
 #propertyForm:hover{
     transform:translateY(-5px);
     box-shadow:0 15px 35px rgba(0,0,0,0.15);
@@ -1017,18 +1004,17 @@ form button {
     transition:0.3s;
 }
 
-/* تأثير focus أحسن */
 #propertyForm input:focus{
     border:1px solid #1b8a8f;
     box-shadow:0 0 6px rgba(27,138,143,0.3);
 }
 
-/* placeholder style */
+
 #propertyForm input::placeholder{
     color:#aaa;
 }
 
-/* button */
+
 #propertyForm button{
     padding:14px;
     border:none;
@@ -1041,13 +1027,12 @@ form button {
     font-weight:500;
 }
 
-/* hover button */
 #propertyForm button:hover{
     background:#156e72;
     transform:scale(1.03);
 }
 
-/* click effect */
+
 #propertyForm button:active{
     transform:scale(0.98);
 }
@@ -1132,9 +1117,7 @@ margin-left: 20px;
 } 
 
 /*عرض المنازل*/
-/* الكونتينر */
 
-/* الكونتينر */
 #properties-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* زوج في السطر */
@@ -1142,13 +1125,12 @@ margin-left: 20px;
   padding: 25px;
 }
 
-/* الكارد */
 .property-card {
   display: flex;
   background: #6b7789;
   border-radius: 20px;
   overflow: hidden;
-  height: 400px; /* 🔥 كبرنا الكارد */
+  height: 400px; 
   box-shadow: 0 8px 25px rgba(0,0,0,0.2);
   transition: 0.3s;
 }
@@ -1157,16 +1139,16 @@ margin-left: 20px;
   transform: translateY(-5px);
 }
  .desc {
-  background: white; /* 🔥 نفس البوكسات */
+  background: white; 
   color: #333;
   padding: 10px;
   border-radius: 10px;
   font-size: 14px;
 
-  min-height: 50px; /* 🔥 باش يكون أكبر */
+  min-height: 50px; 
   line-height: 1.4;
 }
-/* الصورة */
+
 .property-image {
   width: 50%;
   height: 100%;
@@ -1178,7 +1160,7 @@ margin-left: 20px;
   object-fit: cover;
 }
 
-/* المعلومات */
+
 .property-info {
   width: 50%;
   padding: 20px;
@@ -1187,25 +1169,25 @@ margin-left: 20px;
   gap: 10px;
   color: white;
 
-  overflow-y: auto; /* 🔥 هذا الحل */
+  overflow-y: auto; 
 }
 
-/* العنوان */
+
 .property-info h2 {
   margin: 0;
-  font-size: 22px; /* 🔥 أكبر */
+  font-size: 22px; 
 }
 
-/* البيانات */
+
 .property-info span {
   background: white;
   color: #333;
-  padding: 10px; /* 🔥 أكبر */
+  padding: 10px; 
   border-radius: 10px;
   font-size: 14px;
 }
 
-/* الوصف */
+
 .desc {
   background: #f1f1f1;
   font-size: 13px;
@@ -1213,9 +1195,9 @@ margin-left: 20px;
   overflow: hidden;
 }
 
-/* زر الحذف */
+
 .delete-btn {
-  margin-top: 10px; /* ❌ بدل auto */
+  margin-top: 10px; 
   padding: 12px;
   border: none;
   border-radius: 10px;
